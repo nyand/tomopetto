@@ -4,27 +4,18 @@ require_relative 'transition'
 require_relative 'dog'
 
 dog = Dog.new
-hungry = State.new(:hungry)
-idle = State.new(:idle)
-eat = State.new(:eat, dog, eating)
 
-eating = Proc.new { |dog| dog.hunger += 1 }
-eat_to_eat = Transition.new(:eating, :eat, :eat, dog, still_hungry)
+fsm = StateMachine.create :fsm, :idle, :hungry, :eat
 
+tran = { :idle => :hungry }
+fsm.define_enter(:idle) { |dog| puts "Enter: Dog is sitting around.." } 
+fsm.define_transition(tran, dog, lambda{ |dog| dog.hunger < 90}, lambda{ |dog| puts "Tran: gah hungry!" })
+#fsm.define_transition({:hungry => :idle}, dog, lambda{ |dog| dog.hunger >= 90 }, lambda { |dog| puts "Tran: Dog is full now" } )
+fsm.define_transition({:hungry => :idle}, dog, lambda{ |dog| dog.hunger < 90 }, lambda{ |dog| puts "Tran: appetite gone with #{dog.hunger}";dog.hunger+= 10 })
 
-guard = Proc.new { |dog| dog.hunger <= 90 }
-idle_hungry = Transition.new(:idle_hungry, :idle, :hungry, dog, guard)
-
-fsm = StateMachine.new(:fsm, idle)
-
-fsm.add_state(hungry)
-fsm.add_transition(idle_hungry)
-
-puts "Dog State: #{fsm.state_name} "
-
+fsm.begin
 dog.hunger = 50
-puts "Dog getting hungry - #{dog.hunger}"
 
-puts fsm.transition
-
-puts "Dog State: #{fsm.state_name} "
+15.times do 
+  fsm.transition
+end

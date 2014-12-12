@@ -2,17 +2,22 @@ class Transition
 
   attr_reader :from, :to, :name
   
-  def initialize(name, from, to, context, guard, execute)
+  def initialize(name, from, to, context, guard, execute_code)
     @name = name
     @from = from
     @to = to
     @context = context
     @guard = guard
-    @execute = execute
+    @execute_code = execute_code
   end
 
   def can_transition?
-    @guard.call(@context)
+    @guard.call(@context) unless !@guard
+  end
+
+  def execute
+    puts "Executing..."
+    @execute_code.call(@context) if @execute_code
   end
 
 end
