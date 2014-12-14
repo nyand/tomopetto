@@ -12,11 +12,15 @@ class Transition
   end
 
   def can_transition?
-    @guard.call(@context) unless !@guard
+    #@guard.call(@context) unless !@guard
+    if @guard
+      @guard.call(@context)
+    else
+      true
+    end
   end
 
   def execute
-    puts "Executing..."
     @execute_code.call(@context) if @execute_code
   end
 
