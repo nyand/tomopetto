@@ -1,4 +1,5 @@
 require_relative 'state'
+
 class StateMachine
 
   attr_accessor :name

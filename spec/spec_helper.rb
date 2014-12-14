@@ -1,5 +1,5 @@
-require_relative '../lib/state_machine'
-require_relative '../lib/state'
-require_relative '../lib/transition'
+require_relative '../lib/fsm/state_machine'
+require_relative '../lib/fsm/state'
+require_relative '../lib/fsm/transition'
 
 require 'yaml'

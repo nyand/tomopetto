@@ -12,12 +12,11 @@ class State
   end
 
   def add_transition(transition)
-    @transitions[transition.name] = transition
+    @transitions[transition.name] = transition if transition.from == @name
   end
 
   def next_state 
-    puts @transitions.count
-    transitions = @transitions.values.select { |transition| transition.can_transition? }
+    transitions = next_state_transition 
     transitions.map { |transition| transition.to }
   end
 
