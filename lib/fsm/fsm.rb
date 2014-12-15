@@ -2,13 +2,28 @@ require_relative 'state_machine'
 require_relative 'dog'
 
 dog = Dog.new
-dog.hunger = 50 
-fsm = StateMachine.create :fsm, :idle, :hungry, :eat
+fsm = StateMachine.create :fsm, :idle, :hungry, :eat, :sleep, :run
 
-fsm.set :transition, [{:idle => :hungry}, {:hungry => :eat}, {:eat => :idle}, {:eat => :hungry}]
+fsm.set :transition, [{:idle => :run }, {:run => :idle}, {:idle => :hungry}, {:hungry => :eat}, {:eat => :idle}, {:eat => :hungry}]
 
 fsm.set :guard, { :idle => :hungry }, dog do |dog|
   dog.hunger < 90
+end
+
+fsm.set :guard, { :idle => :run }, dog do |dog|
+  dog.hunger >= 90
+end
+
+fsm.set :execute, { :idle => :run}, dog do |dog|
+  puts "Woof Woof. Dog is running"
+end
+
+fsm.set :enter, :run, dog do |dog|
+  dog.hunger -= 5
+end
+
+fsm.set :guard, { :run => :idle }, dog do |dog|
+  true
 end
 
 fsm.set :guard, { :hungry => :eat }, dog do |dog|
@@ -40,7 +55,7 @@ fsm.set :execute, { :eat => :hungry }, dog do |dog|
 end
 
 fsm.set :enter, :idle, dog do |dog|
-  puts "Dog is wiggling its butt"
+  puts "Dog is wiggling its butt #{dog.hunger}"
 end
 
 fsm.set :enter, :eat, dog do |dog|
@@ -48,4 +63,4 @@ fsm.set :enter, :eat, dog do |dog|
   puts "Yum yum : #{dog.hunger}"
 end
 
-15.times { fsm.transition }
+20.times { fsm.transition }
