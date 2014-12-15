@@ -8,11 +8,13 @@ dog = Dog.new
 fsm = StateMachine.create :fsm, :idle, :hungry, :eat
 
 tran = { :idle => :hungry }
-fsm.define_enter(:idle) { |dog| puts "Enter: Dog is sitting around.." } 
+fsm.define_enter(:idle, dog) { |dog| puts "Enter: Dog is sitting around.." } 
 fsm.define_transition(tran, dog, lambda{ |dog| dog.hunger < 90}, lambda{ |dog| puts "Tran: gah hungry!" })
-#fsm.define_transition({:hungry => :idle}, dog, lambda{ |dog| dog.hunger >= 90 }, lambda { |dog| puts "Tran: Dog is full now" } )
-fsm.define_transition({:hungry => :idle}, dog, lambda{ |dog| dog.hunger < 90 }, lambda{ |dog| puts "Tran: appetite gone with #{dog.hunger}";dog.hunger+= 10 })
-
+fsm.define_transition({:hungry => :idle}, dog, lambda{ |dog| dog.hunger >= 90 }, lambda { |dog| puts "Tran: Dog is full now" } )
+fsm.define_transition({:hungry => :eat}, dog, lambda{ |dog| dog.hunger < 90 }, lambda{ |dog| puts "Tran: Eating  #{dog.hunger}"})
+fsm.define_enter(:eat, dog) { |dog| dog.hunger += 10 }
+fsm.define_transition({:eat => :hungry}, dog, lambda{ |dog| dog.hunger < 90}, lambda{ |dog| puts "Tran: dog is still hungry #{dog.hunger}"})
+fsm.define_transition({:eat => :idle}, dog, lambda{ |dog| dog.hunger >= 90}, lambda{ |dog| puts "Tran: yum yum full"})
 fsm.begin
 dog.hunger = 50
 

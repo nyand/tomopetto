@@ -83,7 +83,8 @@ describe StateMachine do
 
   describe "#transition" do
     before :each do
-      @init_state = double("state")
+      @init_state = double("init_state")
+      @init_state.stub(:next_state) { [] }
       @init_state.stub(:name) { :init }
       @init_state.stub(:enter) { true }
       
@@ -93,5 +94,64 @@ describe StateMachine do
 
       @state_machine = StateMachine.new(:fsm, @init_state)
     end
+
+    it "won't transition if no available transition states" do
+      @init_state.stub(:leave) { true }
+      @state_machine.transition
+      expect(@state_machine.state_name).to eq :init
+      expect(@init_state).to_not have_received(:leave)
+    end
+    
+    it "calls exit state code block before transition" do
+
+    end
+
+    it "calls execute transtion code block during transition" do
+
+    end
+    it "calls enter state code block after transition" do
+
+    end
   end
+
+  describe "#history" do
+  end
+
+  describe ".create" do
+    it "raises an exception if no initial state is provided" do
+      expect{ StateMachine.create(:fsm, nil) }.to raise_error
+    end
+    
+    it "returns a StateMachine when intial state is defined" do
+      expect(StateMachine.create(:fsm, :init)).to be_a StateMachine
+    end
+
+    it "sets the initial state to the provided init state" do
+      state_machine = StateMachine.create(:fsm, :init)
+      expect(state_machine.name).to eq :fsm
+      expect(state_machine.state_name).to eq :init
+      expect(state_machine.has_state(:init)).to be_truthy
+    end
+
+    it "creates a StateMachine with the provided states" do
+      state_machine = StateMachine.create(:fsm, :init, :first, :second, :third)
+      expect(state_machine.has_state(:init)).to be_truthy
+      expect(state_machine.has_state(:first)).to be_truthy
+      expect(state_machine.has_state(:second)).to be_truthy
+      expect(state_machine.has_state(:third)).to be_truthy
+    end
+  end
+
+  describe ".begin" do
+  end
+
+  describe ".define_enter" do
+  end
+
+  describe ".define_leave" do
+  end
+
+  describe ".define_transition" do
+  end
+
 end

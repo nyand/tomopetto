@@ -27,9 +27,10 @@ class StateMachine
   def transition
     if @current_state.next_state.count > 0
       @previous_states << @current_state
+      next_state = @states[@current_state.next_state.first]
       @current_state.leave
       @current_state.next_state_transition.first.execute 
-      @current_state = @states[@current_state.next_state.first]
+      @current_state = next_state
       @current_state.enter
       @state_name = @current_state.name
     end
@@ -39,8 +40,14 @@ class StateMachine
     @previous_states.map { |state| state.name }
   end
 
+  def has_state(state_name)
+    !@states[state_name].nil?
+  end
+
   #Helper methods
   def self.create(name, initial_state_name, *state_names)
+    raise "No initial state" if !initial_state_name
+    
     state_names.unshift(initial_state_name)
     states = state_names.map do |name|
       State.new(name) 
@@ -57,12 +64,14 @@ class StateMachine
     @current_state.enter
   end
 
-  def define_enter(state, &block)
+  def define_enter(state, context = nil, &block)
     @states[state].enter_code = block if @states[state]
+    @states[state].enter_context = context if @states[state]
   end
 
-  def define_leave(state, &block)
-    @states[state].enter_code = block if @states[state]
+  def define_leave(state, context = nil, &block)
+    @states[state].leave_code = block if @states[state]
+    @states[state].leave_context = context if @states[state]
   end
 
   def define_transition(from_to, context, guard = nil, execute = nil) 
