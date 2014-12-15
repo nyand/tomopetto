@@ -1,7 +1,7 @@
 class State
 
-  attr_reader :name
-
+  attr_reader :name, :transitions
+  
   attr_accessor :enter_context, :leave_context, :leave_code, :enter_code
   def initialize(name, enter_context = nil, leave_context = nil, leave = nil, enter = nil)
     @name = name

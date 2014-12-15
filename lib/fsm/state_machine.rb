@@ -1,4 +1,5 @@
 require_relative 'state'
+require_relative 'transition'
 
 class StateMachine
 
@@ -44,7 +45,7 @@ class StateMachine
     !@states[state_name].nil?
   end
 
-  #Helper methods
+  # DSL Helper methods
   def self.create(name, initial_state_name, *state_names)
     raise "No initial state" if !initial_state_name
     
@@ -64,6 +65,20 @@ class StateMachine
     @current_state.enter
   end
 
+  def set(event, state, context = nil, &block)
+    if event == :enter
+      define_enter(state, context, &block)
+    elsif event == :leave
+      define_leave(state, context, &block)
+    elsif event == :guard
+      define_guard(state, context, &block)
+    elsif event == :execute
+      define_execute(state, context, &block)
+    elsif event == :transition && state.is_a?(Hash) 
+      state.each { |key, value| define_transition({key => value}) }
+    end
+  end
+
   def define_enter(state, context = nil, &block)
     @states[state].enter_code = block if @states[state]
     @states[state].enter_context = context if @states[state]
@@ -74,12 +89,39 @@ class StateMachine
     @states[state].leave_context = context if @states[state]
   end
 
-  def define_transition(from_to, context, guard = nil, execute = nil) 
+  def define_guard(to_from, context = nil, &block)
+    to = to_from.values.first
+    from = to_from.keys.first
+    name = to.to_s.concat("_").concat(from.to_s).to_sym
+    if @states[to] && @states[from]
+      transition = @states[from].transitions[name]
+      if transition
+        transition.guard_code = block
+        transition.guard_context = context unless context == nil
+      end
+    end
+
+  def define_execute(to_from, context = nil, &block)
+    to = to_from.values.first
+    from = to_from.keys.first
+    name = to.to_s.concat("_").concat(from.to_s).to_sym
+    if @states[to] && @states[from]
+      transition = @states[from].transitions[name]
+      if transition
+        transition.execute_code = block
+        transition.execute_context = context unless context == nil
+      end
+    end
+  end
+
+ end
+
+  def define_transition(from_to, guard_context = nil, execute_context = nil, guard = nil, execute = nil) 
     to = from_to.values.first
     from = from_to.keys.first
     if @states[to] && @states[from]
       name = to.to_s.concat("_").concat(from.to_s).to_sym
-      transition = Transition.new(name, from, to, context, guard, execute)
+      transition = Transition.new(name, from, to, guard_context, execute_context, guard, execute)
       add_transition(transition)
     end 
   end
