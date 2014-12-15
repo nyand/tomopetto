@@ -18,7 +18,8 @@ class State
 
   def next_state 
     transitions = next_state_transition 
-    transitions.map { |transition| transition.to }
+    next_state = transitions.map { |transition| transition.to }
+    next_state
   end
 
   def next_state_transition

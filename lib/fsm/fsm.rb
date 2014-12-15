@@ -5,21 +5,18 @@ dog = Dog.new
 dog.hunger = 50 
 fsm = StateMachine.create :fsm, :idle, :hungry, :eat
 
-fsm.set :transition, { :idle => :hungry, :hungry => :eat, :eat => :hungry, :eat => :idle }
+fsm.set :transition, [{:idle => :hungry}, {:hungry => :eat}, {:eat => :idle}, {:eat => :hungry}]
 
 fsm.set :guard, { :idle => :hungry }, dog do |dog|
   dog.hunger < 90
-  true
 end
 
 fsm.set :guard, { :hungry => :eat }, dog do |dog|
   dog.hunger < 90
-  true
 end
 
 fsm.set :guard, { :eat => :hungry }, dog do |dog|
   dog.hunger < 90
-  true
 end
 
 fsm.set :guard, { :eat => :idle }, dog do |dog|

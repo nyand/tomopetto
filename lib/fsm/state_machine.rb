@@ -74,8 +74,8 @@ class StateMachine
       define_guard(state, context, &block)
     elsif event == :execute
       define_execute(state, context, &block)
-    elsif event == :transition && state.is_a?(Hash) 
-      state.each { |key, value| define_transition({key => value}) }
+    elsif event == :transition && state.is_a?(Array) 
+      state.each { |value| define_transition(value) }
     end
   end
 
