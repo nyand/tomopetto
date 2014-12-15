@@ -15,15 +15,16 @@ class StateMachine
   end
 
   def add_state(state)
-    @states[state.name] = state 
+    @states[state.name] = state if state
   end
 
   def add_transition(transition)
-    @states[transition.from].add_transition(transition)
+    if transition && @states[transition.from] && @states[transition.to]
+      @states[transition.from].add_transition(transition) 
+    end
   end
 
   def transition
-    puts "go" if @current_state.next_state
     if @current_state.next_state.count > 0
       @previous_states << @current_state
       @current_state.leave
