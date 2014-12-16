@@ -2,7 +2,7 @@ class State
 
   attr_reader :name, :transitions
   
-  attr_accessor :enter_context, :leave_context, :leave_code, :enter_code
+  attr_accessor :enter_context, :leave_context, :default_context, :leave_code, :enter_code, :default_code
   def initialize(name, enter_context = nil, leave_context = nil, leave = nil, enter = nil)
     @name = name
     @transitions = {}
@@ -32,6 +32,10 @@ class State
 
   def enter
     @enter_code.call(@enter_context) if @enter_code
+  end
+
+  def default
+    @default_code.call(@default_context) if @default_code
   end
 
 end

@@ -4,7 +4,7 @@ require_relative 'dog'
 dog = Dog.new
 fsm = StateMachine.create :fsm, :idle, :hungry, :eat, :sleep, :run
 
-fsm.set :transition, [{:idle => :run }, {:run => :idle}, {:idle => :hungry}, {:hungry => :eat}, {:eat => :idle}, {:eat => :hungry}]
+fsm.set :transition, [{:run => :idle}, {:idle => :hungry}, {:hungry => :eat}, {:eat => :idle}, {:eat => :hungry}, ]
 
 fsm.set :guard, { :idle => :hungry }, dog do |dog|
   dog.hunger < 90
@@ -14,12 +14,12 @@ fsm.set :guard, { :idle => :run }, dog do |dog|
   dog.hunger >= 90
 end
 
-fsm.set :execute, { :idle => :run}, dog do |dog|
-  puts "Woof Woof. Dog is running"
+fsm.set :default, :idle, dog do |dog|
+  puts "Bored..."
 end
 
-fsm.set :enter, :run, dog do |dog|
-  dog.hunger -= 5
+fsm.set :execute, { :idle => :run}, dog do |dog|
+  puts "Woof Woof. Dog is running"
 end
 
 fsm.set :guard, { :run => :idle }, dog do |dog|

@@ -34,6 +34,9 @@ class StateMachine
       @current_state = next_state
       @current_state.enter
       @state_name = @current_state.name
+    else
+      @previous_states << @current_state
+      @current_state.default
     end
   end
 
@@ -74,6 +77,8 @@ class StateMachine
       define_guard(state, context, &block)
     elsif event == :execute
       define_execute(state, context, &block)
+    elsif event == :default
+      define_default(state, context, &block)
     elsif event == :transition && state.is_a?(Array) 
       state.each { |value| define_transition(value) }
     end
@@ -87,6 +92,11 @@ class StateMachine
   def define_leave(state, context = nil, &block)
     @states[state].leave_code = block if @states[state]
     @states[state].leave_context = context if @states[state]
+  end
+
+  def define_default(state, context = nil, &block)
+    @states[state].default_code = block if @states[state]
+    @states[state].default_context = context if @states[state]
   end
 
   def define_guard(to_from, context = nil, &block)
