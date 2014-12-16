@@ -1,8 +1,8 @@
 require 'gosu'
-
+require_relative 'message'
 class InputManager
 
-  def initialze(mappings = {})
+  def initialize(mappings = {})
     @mappings = mappings
     @publishers = []
   end
@@ -12,13 +12,13 @@ class InputManager
   end
 
   def remove_publisher(publisher)
-    @publishers.remove*publisher)
+    @publishers.remove(publisher)
   end
 
   def update(id)
     if @mappings[id]
-      message = Message.new(self, type: "button_pressed", key: @mappings[id])
-      @publishers.each { |publisher| publisher.publish(message) }
+      payload = {type: "button_pressed", key: @mappings[id]}
+      @publishers.each { |publisher| publisher.publish(payload) }
     end
   end
 end

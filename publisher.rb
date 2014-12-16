@@ -1,3 +1,4 @@
+require_relative 'message'
 class Publisher
 
   attr_reader :name
@@ -11,10 +12,11 @@ class Publisher
   end
 
   def unsubscribe(subscriber)
-    @subsribers.delete(subscriber)
+    @subscribers.delete(subscriber)
   end
 
-  def publish(message)
-    @subscribers.each { |subscriber| subscriber.receive }
+  def publish(payload)
+    message = Message.new(self, payload)
+    @subscribers.each { |subscriber| subscriber.receive_message(message) }
   end
 end
