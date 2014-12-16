@@ -2,7 +2,7 @@ require 'gosu'
 require_relative 'image_manager'
 require_relative 'pet'
 require_relative 'input_manager'
-require_relative 'publisher'
+require_relative 'lib/messaging/publisher'
 
 class GameWindow < Gosu::Window
     def initialize
