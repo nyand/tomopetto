@@ -18,13 +18,11 @@ class GameWindow < Gosu::Window
       @image_manager = ImageManager.new(self)
       @image_manager.load("chaos.png", 21, 25)
 
+      puts Gosu::KbLeft.class
       @input_manager = InputManager.new(Gosu::KbLeft => 'left', Gosu::KbRight => 'right',
                                         Gosu::KbUp => 'up', Gosu::KbDown => 'down')
       @keyboard_publisher = Publisher.new('Keyboard')
       @input_manager.add_publisher(@keyboard_publisher)
-      #@pet = Pet.new("Chaos")
-      #@keyboard_publisher.subscribe(@pet)
-      @count = 0
 
       @manager = GameObjectManager.new
 
@@ -52,8 +50,6 @@ class GameWindow < Gosu::Window
 
     def update
       @manager.update
-      @count += 1
-      @count = 0 if @count == 150 
       if button_down?(Gosu::KbLeft)
         @input_manager.update(Gosu::KbLeft)
       end
@@ -74,7 +70,14 @@ class GameWindow < Gosu::Window
 
     def draw
       @manager.draw
-      #@image_manager.get("chaos.png")[@count/30].draw(@pet.x,@pet.y, 0)
+    end
+
+    def button_down(id)
+      puts "down"
+    end
+
+    def button_up(id)
+      puts "up"
     end
 
 end
