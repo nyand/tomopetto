@@ -8,18 +8,17 @@ class DrawComponent < Component
     puts @image
     @x = 0
     @y = 0
+    @z = 0
   end
 
   def draw
-    @image.draw(@x,@y,0)
+    @image.draw(@x,@y,@y)
   end
 
   def receive_message(message)
     payload = message.payload
-    puts "Draw: got payload #{payload}"
     
     if payload[:type] == "position_updated"
-      puts "Draw: received payload #{payload}"
       @x = payload[:x]
       @y = payload[:y]
     end

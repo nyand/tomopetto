@@ -9,6 +9,7 @@ require_relative 'position'
 require_relative 'movement_component'
 require_relative 'draw_component'
 require_relative 'drawable_game_object'
+require_relative 'game_object_manager'
 class GameWindow < Gosu::Window
     def initialize
       super 320,240, false
@@ -25,6 +26,16 @@ class GameWindow < Gosu::Window
       #@keyboard_publisher.subscribe(@pet)
       @count = 0
 
+      @manager = GameObjectManager.new
+
+      @pet = DrawableGameObject.new(1, Publisher.new('Pet'))
+      position = Position.new(20,20)
+      @pet.add_component(position)
+      draw = DrawComponent.new(@image_manager.get("chaos.png")[1])
+      @pet.add_component(draw)
+      movement = MovementComponent.new
+      @pet.add_component(movement)
+
       @pet2 = DrawableGameObject.new(1, Publisher.new('Pet2'))
       position = Position.new(50, 50)
       @pet2.add_component(position)
@@ -34,11 +45,13 @@ class GameWindow < Gosu::Window
       @pet2.add_component(draw)
       @keyboard_publisher.subscribe(@pet2)
 
+      @manager.add(@pet)
+      @manager.add(@pet2)
       
     end
 
     def update
-      @pet2.update
+      @manager.update
       @count += 1
       @count = 0 if @count == 150 
       if button_down?(Gosu::KbLeft)
@@ -60,7 +73,7 @@ class GameWindow < Gosu::Window
     end
 
     def draw
-      @pet2.draw
+      @manager.draw
       #@image_manager.get("chaos.png")[@count/30].draw(@pet.x,@pet.y, 0)
     end
 
