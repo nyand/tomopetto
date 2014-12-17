@@ -1,5 +1,6 @@
 require 'gosu'
 require_relative 'lib/messaging/message'
+
 class InputManager
 
   def initialize(mappings = {})
