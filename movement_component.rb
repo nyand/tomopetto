@@ -4,7 +4,7 @@ class MovementComponent < Component
 
   def receive_message(message)
     payload = message.payload
-    if payload[:type] == "button_pressed"
+    if payload[:type] == :pressing 
       if payload[:key] == "left"
         payload = {type: "position_move", x: -1, y: 0}
       end

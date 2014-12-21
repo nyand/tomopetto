@@ -16,9 +16,10 @@ class InputManager
     @publishers.remove(publisher)
   end
 
-  def update(id)
+
+  def update(id, type)
     if @mappings[id]
-      payload = {type: "button_pressed", key: @mappings[id]}
+      payload = {type: type, key: @mappings[id]}
       @publishers.each { |publisher| publisher.publish(payload) }
     end
   end
