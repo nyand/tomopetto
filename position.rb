@@ -28,5 +28,6 @@ class Position < Component
     if payload[:type] == "position_reset"
       @x = payload[:x] || @prev_x
       @y = payload[:y] || @prev_y
+    end
   end
 end

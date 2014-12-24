@@ -1,12 +1,13 @@
 class RectangleComponent < Component
 
-  attr_reader :x, :y, :width, :height
+  attr_reader :x, :y, :width, :height, :owner
 
-  def initialize(x, y, width, height)
-    @x = x
-    @y = y
+  def initialize(owner, x, y, width, height)
+    @x = @prev_x = x
+    @y = @prev_y = y
     @width = width
     @height = height
+    @owner = owner
   end
 
   def update
@@ -14,20 +15,18 @@ class RectangleComponent < Component
   end
 
   def receive_message(message)
+    payload = message.payload
     if payload[:type] == "position_updated"
+      @prev_x = @x
+      @prev_y = @y
       @x = payload[:x]
-      @y = [payload[:y]
+      @y = payload[:y]
     end
 
-    if payload[:type] == "collision_check"
-      #deal and handle collisions here
-      object = payload[:object]
-      self.aabb_collision(self, object)
+    if payload[:type] == "position_reset"
+      @x = payload[:x] || @prev_x
+      @y = payload[:y] || @prev_y
     end
-
   end
 
-  def self.aabb_collision?(object1, object2)
-    (object1.width < object2.x || object1.x > object2.width) && (object1.y > object2.height || object1.height < object2.y)
-  end
 end

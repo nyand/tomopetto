@@ -15,8 +15,9 @@ class Publisher
     @subscribers.delete(subscriber)
   end
 
-  def publish(payload)
+  def publish(payload, to = @subscribers)
     message = Message.new(self, payload)
-    @subscribers.each { |subscriber| subscriber.receive_message(message) }
+    #puts "Received filtered: #{@name}" unless to.equal?(@subscribers)
+    to.each { |subscriber| subscriber.receive_message(message) }
   end
 end

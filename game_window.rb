@@ -12,6 +12,8 @@ require_relative 'drawable_game_object'
 require_relative 'game_object_manager'
 require_relative 'keyboard_manager'
 require_relative 'mouse_manager'
+require_relative 'physics_manager'
+require_relative 'rectangle_component'
 
 class GameWindow < Gosu::Window
     def initialize
@@ -29,6 +31,8 @@ class GameWindow < Gosu::Window
       @input_manager.add_publisher(@keyboard_publisher)
 
       @manager = GameObjectManager.new
+      
+      @collision = PhysicsManager.new
 
       @pet = DrawableGameObject.new(1, Publisher.new('Pet'))
       position = Position.new(20,20)
@@ -37,6 +41,9 @@ class GameWindow < Gosu::Window
       @pet.add_component(draw)
       movement = MovementComponent.new
       @pet.add_component(movement)
+      collision = RectangleComponent.new(@pet, 20,20,20,20)
+      @pet.add_component(collision)
+      @collision.add(collision)
 
       @pet2 = DrawableGameObject.new(1, Publisher.new('Pet2'))
       position = Position.new(50, 50)
@@ -46,6 +53,9 @@ class GameWindow < Gosu::Window
       draw = DrawComponent.new(@image_manager.get("chaos.png")[0], self.height)
       @pet2.add_component(draw)
       @keyboard_publisher.subscribe(@pet2)
+      collision = RectangleComponent.new(@pet2, 50, 50,20,20)
+      @pet2.add_component(collision)
+      @collision.add(collision)
 
       @cursor = DrawableGameObject.new(1, Publisher.new('Cursor'))
       position = Position.new(100,100)
@@ -55,6 +65,9 @@ class GameWindow < Gosu::Window
       draw = DrawComponent.new(@image_manager.get("hand.png"), self.height, 1)
       @cursor.add_component(draw)
       @keyboard_publisher.subscribe(@cursor)
+      collision = RectangleComponent.new(@cursor, 100, 100,50,35)
+      @cursor.add_component(collision)
+      @collision.add(collision)
 
       @manager.add(@pet)
       @manager.add(@pet2)
@@ -68,6 +81,7 @@ class GameWindow < Gosu::Window
       @mouse_manager.update(self.mouse_x, self.mouse_y)
       @keyboard_manager.update
       @manager.update
+      @collision.update
     end
 
     def draw
