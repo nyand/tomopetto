@@ -46,7 +46,7 @@ class GameWindow < Gosu::Window
       @collision.add(collision)
 
       @pet2 = DrawableGameObject.new(1, Publisher.new('Pet2'))
-      position = Position.new(50, 50)
+      position = Position.new(50, 50, true)
       @pet2.add_component(position)
       movement = MovementComponent.new
       @pet2.add_component(movement)
