@@ -3,15 +3,16 @@ require_relative 'camera'
 class FollowCamera < Camera
 
   attr_accessor :follow
-  def initialize(height, scale_x = 1, scale_y = 1, x = 0, y = 0, alpha = 1, rot = 0, rot_x = 0, rot_y = 0, color = 0xffffffff)
-    super(height, scale_x, scale_y, x, y, alpha, rot, rot_x, rot_y, color)
+  def initialize(width, height, scale_x = 1, scale_y = 1,xport = 0, yport = 0, x = 0, y = 0, alpha = 1, rot = 0, rot_x = 0, rot_y = 0, color = 0xffffffff)
+    super(width, height, scale_x, scale_y, xport, yport, x, y, alpha, rot, rot_x, rot_y, color)
     @follow = nil 
   end
 
   def update
+    super
     if @follow
-      @x = @follow.x + 50 
-      @y = @follow.y + 50
+      @x = @follow.x - @width/2
+      @y = @follow.y - @height/2
       puts "#{@x}.#{@y})"
     end 
   end

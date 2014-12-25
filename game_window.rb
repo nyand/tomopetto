@@ -23,7 +23,7 @@ class GameWindow < Gosu::Window
       @image_manager = ImageManager.new(self)
       @image_manager.load("chaos.png", 21, 25)
       @image_manager.load("hand.png")
-      @camera = Camera.new(100,240, 1, 1, 50, 0, 0, 0)
+      @camera = FollowCamera.new(100,240, 1, 1, 50, 0)
       @input_manager = InputManager.new(Gosu::KbLeft => 'left', Gosu::KbRight => 'right',
                                         Gosu::KbUp => 'up', Gosu::KbDown => 'down')
 
@@ -67,7 +67,7 @@ class GameWindow < Gosu::Window
       draw = DrawComponent.new(@image_manager.get("hand.png"), 1)
       @cursor.add_component(draw)
       @keyboard_publisher.subscribe(@cursor)
-      #@camera.follow = draw
+      @camera.follow = draw
       @camera.add(draw)
 
       @manager.add(@pet)

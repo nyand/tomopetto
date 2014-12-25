@@ -27,7 +27,6 @@ class Camera
   end
 
   def update
-    @x+= 1
   end
 
   def draw
