@@ -16,16 +16,17 @@ class RectangleComponent < Component
 
   def receive_message(message)
     payload = message.payload
-    if payload[:type] == "position_updated"
+    if payload[:type] == "position_move"
       @prev_x = @x
       @prev_y = @y
-      @x = payload[:x]
-      @y = payload[:y]
+      @x += payload[:x]
+      @y += payload[:y]
     end
 
     if payload[:type] == "position_reset"
       @x = payload[:x] || @prev_x
       @y = payload[:y] || @prev_y
+      puts "Reset box"
     end
   end
 

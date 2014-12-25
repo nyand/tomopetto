@@ -78,14 +78,23 @@ class GameWindow < Gosu::Window
     end
 
     def update
+      puts "===========\n\n"
+      puts "Enter update"
+      puts "------------"
       @mouse_manager.update(self.mouse_x, self.mouse_y)
       @keyboard_manager.update
       @manager.update
       @collision.update
+      puts "------------"
+      puts "Exit update"
+      puts "------------"
     end
 
     def draw
+      puts "Enter draw"
       @manager.draw
+      puts "Exit draw"
+      puts "=============\n\n"
     end
 
     def button_down(id)
