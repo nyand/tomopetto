@@ -1,4 +1,5 @@
 require_relative 'camera'
+require_relative 'draw_component'
 
 class FollowCamera < Camera
 
@@ -9,11 +10,11 @@ class FollowCamera < Camera
   end
 
   def update
-    super
-    if @follow
-      @x = @follow.x - @width/2
-      @y = @follow.y - @height/2
+    if @follow 
+      @x = @follow.x - @width/2/@scale_x
+      @y = @follow.y - @height/2/@scale_y
       puts "#{@x}.#{@y})"
     end 
   end
+
 end
