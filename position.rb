@@ -17,24 +17,18 @@ class Position < Component
 
   def receive_message(message)
     payload = message.payload
-    #puts "Got payload: #{payload}" if payload[:type] == "position_move"
     if payload[:type] == "position_move"
       @prev_x = @x
       @prev_y = @y
       @x += payload[:x]
       @y += payload[:y]
       if @debug
-        puts ""
-        puts "Updated position #{@x},#{@y}"
-        puts "Previousposition #{@prev_x},#{@prev_y}"
-        puts ""
       end
     end  
 
     if payload[:type] == "position_reset"
       @x = payload[:x] || @prev_x
       @y = payload[:y] || @prev_y
-      puts "Reset"
     end
   end
 end
