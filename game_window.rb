@@ -14,7 +14,7 @@ require_relative 'keyboard_manager'
 require_relative 'mouse_manager'
 require_relative 'physics_manager'
 require_relative 'rectangle_component'
-require_relative 'camera.rb'
+require_relative 'follow_camera.rb'
 class GameWindow < Gosu::Window
     def initialize
       super 320,240, false
@@ -23,7 +23,7 @@ class GameWindow < Gosu::Window
       @image_manager = ImageManager.new(self)
       @image_manager.load("chaos.png", 21, 25)
       @image_manager.load("hand.png")
-      @camera = Camera.new(240)
+      @camera = Camera.new(100,240, 1, 1, 50, 0, 0, 0)
       @input_manager = InputManager.new(Gosu::KbLeft => 'left', Gosu::KbRight => 'right',
                                         Gosu::KbUp => 'up', Gosu::KbDown => 'down')
 
@@ -67,6 +67,7 @@ class GameWindow < Gosu::Window
       draw = DrawComponent.new(@image_manager.get("hand.png"), 1)
       @cursor.add_component(draw)
       @keyboard_publisher.subscribe(@cursor)
+      #@camera.follow = draw
       @camera.add(draw)
 
       @manager.add(@pet)
@@ -82,10 +83,16 @@ class GameWindow < Gosu::Window
       @keyboard_manager.update
       @manager.update
       @collision.update
+      @camera.update
     end
 
     def draw
-      @camera.draw
+      #drawing the camera
+      draw_line(@camera.xport,@camera.yport,0xffffff00,@camera.xport,@camera.height + @camera.yport,0xffffff00)
+      draw_line(@camera.xport,@camera.yport,0xffffff00,@camera.width + @camera.xport,@camera.yport,0xffffff00)
+      draw_line(@camera.width + @camera.xport,@camera.yport,0xffffff00,@camera.width + @camera.xport,@camera.height + @camera.yport,0xffffff00)
+      draw_line(@camera.xport,@camera.height + @camera.yport,0xffffff00,@camera.width + @camera.xport,@camera.height + @camera.yport,0xffffff00)
+      clip_to(@camera.xport, @camera.yport, @camera.width, @camera.height) { @camera.draw }
     end
 
     def button_down(id)
