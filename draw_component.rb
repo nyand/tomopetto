@@ -3,13 +3,13 @@ require 'gosu'
 
 class DrawComponent < Component
 
-  def initialize(image, height = 320, z = 0)
+  attr_reader :image, :x, :y, :z, :alpha
+  def initialize(image, z = 0)
     @image = image
-    puts @image
     @x = 0
     @y = 0
     @z = z 
-    @height = height
+    @alpha = 1.0
   end
 
   def draw

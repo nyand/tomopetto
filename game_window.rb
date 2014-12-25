@@ -5,7 +5,7 @@ require_relative 'input_manager'
 require_relative 'lib/messaging/publisher'
 require_relative 'game_object'
 require_relative 'component'
-require_relative 'position'
+require_relative 'position_component'
 require_relative 'movement_component'
 require_relative 'draw_component'
 require_relative 'drawable_game_object'
@@ -14,7 +14,7 @@ require_relative 'keyboard_manager'
 require_relative 'mouse_manager'
 require_relative 'physics_manager'
 require_relative 'rectangle_component'
-
+require_relative 'camera.rb'
 class GameWindow < Gosu::Window
     def initialize
       super 320,240, false
@@ -23,7 +23,7 @@ class GameWindow < Gosu::Window
       @image_manager = ImageManager.new(self)
       @image_manager.load("chaos.png", 21, 25)
       @image_manager.load("hand.png")
-      
+      @camera = Camera.new(240)
       @input_manager = InputManager.new(Gosu::KbLeft => 'left', Gosu::KbRight => 'right',
                                         Gosu::KbUp => 'up', Gosu::KbDown => 'down')
 
@@ -35,39 +35,39 @@ class GameWindow < Gosu::Window
       @collision = PhysicsManager.new
 
       @pet = DrawableGameObject.new(1, Publisher.new('Pet'))
-      position = Position.new(20,20)
+      position = PositionComponent.new(20,20)
       @pet.add_component(position)
-      draw = DrawComponent.new(@image_manager.get("chaos.png")[1],self.height)
+      draw = DrawComponent.new(@image_manager.get("chaos.png")[1])
       @pet.add_component(draw)
       movement = MovementComponent.new
       @pet.add_component(movement)
       collision = RectangleComponent.new(@pet, 20,20,20,20)
       @pet.add_component(collision)
       @collision.add(collision)
+      @camera.add(draw)
 
       @pet2 = DrawableGameObject.new(1, Publisher.new('Pet2'))
-      position = Position.new(50, 50, true)
+      position = PositionComponent.new(50, 50, true)
       @pet2.add_component(position)
       movement = MovementComponent.new
       @pet2.add_component(movement)
-      draw = DrawComponent.new(@image_manager.get("chaos.png")[0], self.height)
+      draw = DrawComponent.new(@image_manager.get("chaos.png")[0])
       @pet2.add_component(draw)
       @keyboard_publisher.subscribe(@pet2)
       collision = RectangleComponent.new(@pet2, 50, 50,20,20)
       @pet2.add_component(collision)
       @collision.add(collision)
+      @camera.add(draw)
 
       @cursor = DrawableGameObject.new(1, Publisher.new('Cursor'))
-      position = Position.new(100,100)
+      position = PositionComponent.new(100,100)
       @cursor.add_component(position)
       movement = MovementComponent.new
       @cursor.add_component(movement) 
-      draw = DrawComponent.new(@image_manager.get("hand.png"), self.height, 1)
+      draw = DrawComponent.new(@image_manager.get("hand.png"), 1)
       @cursor.add_component(draw)
       @keyboard_publisher.subscribe(@cursor)
-      collision = RectangleComponent.new(@cursor, 100, 100,50,35)
-      @cursor.add_component(collision)
-      @collision.add(collision)
+      @camera.add(draw)
 
       @manager.add(@pet)
       @manager.add(@pet2)
@@ -85,7 +85,7 @@ class GameWindow < Gosu::Window
     end
 
     def draw
-      @manager.draw
+      @camera.draw
     end
 
     def button_down(id)

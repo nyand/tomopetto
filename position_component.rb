@@ -1,6 +1,6 @@
 require_relative 'component'
 
-class Position < Component
+class PositionComponent < Component
 
   attr_reader :x, :y
 

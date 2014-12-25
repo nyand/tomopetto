@@ -7,7 +7,6 @@ class MovementComponent < Component
   end
 
   def update
-    puts "Moving "
     payload = {type: "position_move", x: @x, y: @y}
     publisher.publish(payload)    
     @x =  @y = 0 
@@ -16,7 +15,6 @@ class MovementComponent < Component
   def receive_message(message)
     payload = message.payload
     if payload[:type] == :pressing 
-      puts "Received keys"
       if payload[:key] == "left"
         @x = -1
       elsif payload[:key] == "right"
