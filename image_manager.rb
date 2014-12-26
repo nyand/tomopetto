@@ -18,7 +18,9 @@ class ImageManager
   end 
 
   def load(image, x = nil, y = nil)
-    if x && y
+    if image.nil?
+      load_all
+    elsif x && y
       @images[image] = Gosu::Image::load_tiles(@window, "#{@image_dir}/#{image}", x, y, false) 
     else
       @images[image] = Gosu::Image.new(@window, "#{@image_dir}/#{image}", false)

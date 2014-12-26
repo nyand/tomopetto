@@ -23,7 +23,9 @@ class GameWindow < Gosu::Window
       @image_manager = ImageManager.new(self)
       @image_manager.load("chaos.png", 21, 25)
       @image_manager.load("hand.png")
-      @camera = FollowCamera.new(320,240, 1, 1, 0, 0)
+      @image_manager.load("block.png")
+      @image_manager.load("grass.png")
+      @camera = Camera.new(320,240, 1, 1, 0, 0)
       @input_manager = InputManager.new(Gosu::KbLeft => 'left', Gosu::KbRight => 'right',
                                         Gosu::KbUp => 'up', Gosu::KbDown => 'down')
 
@@ -34,30 +36,17 @@ class GameWindow < Gosu::Window
       
       @collision = PhysicsManager.new
 
-      @pet = DrawableGameObject.new(1, Publisher.new('Pet'))
-      position = PositionComponent.new(20,20)
-      @pet.add_component(position)
-      draw = DrawComponent.new(@image_manager.get("chaos.png")[1])
-      @pet.add_component(draw)
-      movement = MovementComponent.new
-      @pet.add_component(movement)
-      collision = RectangleComponent.new(@pet, 20,20,20,20)
-      @pet.add_component(collision)
-      @collision.add(collision)
-      @camera.add(draw)
-
       @pet2 = DrawableGameObject.new(1, Publisher.new('Pet2'))
       position = PositionComponent.new(50, 50, true)
       @pet2.add_component(position)
       movement = MovementComponent.new
       @pet2.add_component(movement)
-      draw = DrawComponent.new(@image_manager.get("chaos.png")[0])
+      draw = DrawComponent.new(@image_manager.get("chaos.png")[0], 1)
       @pet2.add_component(draw)
       @keyboard_publisher.subscribe(@pet2)
       collision = RectangleComponent.new(@pet2, 50, 50,20,20)
       @pet2.add_component(collision)
       @collision.add(collision)
-      @camera.follow = draw
       @camera.add(draw)
 
       @cursor = DrawableGameObject.new(1, Publisher.new('Cursor'))
@@ -65,12 +54,73 @@ class GameWindow < Gosu::Window
       @cursor.add_component(position)
       movement = MovementComponent.new
       @cursor.add_component(movement) 
-      draw = DrawComponent.new(@image_manager.get("hand.png"), 1)
+      draw = DrawComponent.new(@image_manager.get("hand.png"), 2)
       @cursor.add_component(draw)
       @keyboard_publisher.subscribe(@cursor)
       @camera.add(draw)
 
-      @manager.add(@pet)
+      20.times do |y|
+        #top
+        block = DrawableGameObject.new(y, Publisher.new)
+        position = PositionComponent.new(8,y*16+8)
+        block.add_component(position)
+        collision = RectangleComponent.new(block, position.x, position.y, 16,16)
+        block.add_component(collision)
+        @collision.add(collision)
+        draw = DrawComponent.new(@image_manager.get("block.png"), 1)
+        block.add_component(draw)
+        @manager.add(block)
+        @camera.add(draw)
+
+        #left
+        block = DrawableGameObject.new(y+16, Publisher.new)
+        position = PositionComponent.new(y*16+8,8)
+        block.add_component(position)
+        collision = RectangleComponent.new(block, position.x, position.y, 16,16)
+        block.add_component(collision)
+        @collision.add(collision)
+        draw = DrawComponent.new(@image_manager.get("block.png"), 1)
+        block.add_component(draw)
+        @manager.add(block)
+        @camera.add(draw)
+
+        #bottom
+        block = DrawableGameObject.new(y+16*2, Publisher.new)
+        position = PositionComponent.new(y*16+8,240-8)
+        block.add_component(position)
+        collision = RectangleComponent.new(block, position.x, position.y, 16,16)
+        block.add_component(collision)
+        @collision.add(collision)
+        draw = DrawComponent.new(@image_manager.get("block.png"), 1)
+        block.add_component(draw)
+        @manager.add(block)
+        @camera.add(draw)
+
+        #right
+        block = DrawableGameObject.new(y+16*2, Publisher.new)
+        position = PositionComponent.new(312,y*16+8)
+        block.add_component(position)
+        collision = RectangleComponent.new(block, position.x, position.y, 16,16)
+        block.add_component(collision)
+        @collision.add(collision)
+        draw = DrawComponent.new(@image_manager.get("block.png"), 1)
+        block.add_component(draw)
+        @manager.add(block)
+        @camera.add(draw)
+      end
+
+      20.times do |x|
+        15.times do |y|
+          grass = DrawableGameObject.new(50, Publisher.new)
+          position = PositionComponent.new(x*16+8,y*16+8)
+          grass.add_component(position)
+          draw = DrawComponent.new(@image_manager.get("grass.png"), 0)
+          grass.add_component(draw)
+          @manager.add(grass)
+          @camera.add(draw)
+        end
+      end
+
       @manager.add(@pet2)
       @manager.add(@cursor)
       

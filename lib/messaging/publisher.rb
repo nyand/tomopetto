@@ -2,7 +2,7 @@ require_relative 'message'
 class Publisher
 
   attr_reader :name
-  def initialize(name)
+  def initialize(name = "Publisher")
     @name = name 
     @subscribers = []
   end
