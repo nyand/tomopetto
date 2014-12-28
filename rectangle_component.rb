@@ -1,6 +1,7 @@
 class RectangleComponent < Component
 
-  attr_reader :x, :y, :width, :height, :owner
+  attr_reader :x, :y, :width, :height
+  attr_accessor :owner
 
   def initialize(owner, x, y, width, height)
     @x = @prev_x = x

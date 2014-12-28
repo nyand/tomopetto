@@ -17,6 +17,7 @@ require_relative 'rectangle_component'
 require_relative 'follow_camera'
 require_relative 'scene'
 require_relative 'scene_manager'
+require_relative 'game_scene'
 
 class GameWindow < Gosu::Window
     def initialize
@@ -24,10 +25,9 @@ class GameWindow < Gosu::Window
       self.caption = "友ペット - Tomopetto"
 
       @image_manager = ImageManager.new(self)
-      @image_manager.load("chaos.png", 21, 25)
-      @image_manager.load("hand.png")
       @image_manager.load("block.png")
       @image_manager.load("grass.png")
+      @image_manager.load("chaos.png", 21, 25)
       @camera = Camera.new(320,240, 1, 1, 0, 0)
       @input_manager = InputManager.new(Gosu::KbLeft => 'left', Gosu::KbRight => 'right',
                                         Gosu::KbUp => 'up', Gosu::KbDown => 'down')
@@ -40,10 +40,12 @@ class GameWindow < Gosu::Window
       @collision = PhysicsManager.new
       @keyboard_manager = KeyboardManager.new(@input_manager)
 
-      @scene = Scene.new("Game", self, Publisher.new, [@manager, @camera, @keyboard_manager, @collision], [@camera])
+      @scene = GameScene.new("Game", self, Publisher.new)
+      puts @scene
       @scene_manager = SceneManager.new
       @scene_manager.add(@scene)
-      
+      @scene_manager.start 
+
       @pet2 = DrawableGameObject.new(1, Publisher.new('Pet2'))
       position = PositionComponent.new(50, 50, true)
       @pet2.add_component(position)
@@ -66,6 +68,8 @@ class GameWindow < Gosu::Window
       @cursor.add_component(draw)
       @keyboard_publisher.subscribe(@cursor)
       @camera.add(draw)
+
+      
 
       20.times do |y|
         #top

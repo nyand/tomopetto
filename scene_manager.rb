@@ -4,6 +4,7 @@ class SceneManager
   attr_reader :scenes, :current, :previous
   def initialize
     @scenes = {}
+    @publisher = Publisher.new
   end
 
   def set_current(scene_name)
@@ -12,11 +13,13 @@ class SceneManager
 
   def add(scene)
     @scenes[scene.name] = scene
+    @publisher.subscribe(scene)
     @current ||= scene
   end
 
   def remove(scene)
     @scenes.delete(scene.name)
+    @publisher.unsubscribe(scene)
   end
 
   def transition(next_scene)
@@ -28,6 +31,10 @@ class SceneManager
       @current.start
       true
     end
+  end
+
+  def start
+    @current.start if @current
   end
 
   def update

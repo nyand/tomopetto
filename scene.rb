@@ -8,7 +8,7 @@ class Scene
     @publisher = publisher
     @publisher.subscribe(self)
 
-    @space = Space.new(true, updaters, cameras)
+    @spaces = {update:  Space.new(true, window, updaters, cameras)}
   end
 
   def start
@@ -20,11 +20,11 @@ class Scene
   end
 
   def update
-    @space.update
+    @spaces[:update].update
   end
 
   def draw
-    @space.draw
+    @spaces[:update].draw
   end
 
   def transition

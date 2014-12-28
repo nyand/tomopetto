@@ -1,8 +1,9 @@
 class Space
 
   attr_reader :updaters, :cameras, :running
-  def initialize(running, updaters = [], cameras = [])
+  def initialize(running, window, updaters = [], cameras = [])
     @running = running
+    @window = window
     @updaters = updaters
     @cameras = cameras
   end
