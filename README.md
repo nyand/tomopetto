@@ -19,4 +19,4 @@ transitions between each `Scene`.
 
 An attempt to balance between engineering the architecture for code quality and simply getting things done was made. This was 
 done to avoid analysis paralysis while writing code that could scale, all while learning Ruby and game architecture. Design
-patterns such as Observers, Components, 
+patterns such as Observers, Components, FSM, Spartial Partitions were used throughout when deemed appropriate.
