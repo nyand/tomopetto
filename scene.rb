@@ -1,17 +1,18 @@
+require_relative 'space'
 class Scene
   
-  attr_reader :updaters, :cameras, :name
+  attr_reader :name
   def initialize(name, window, publisher, updaters = [], cameras = [] )
     @name = name
     @window = window
-    @updaters = updaters 
-    @cameras = cameras
     @publisher = publisher
     @publisher.subscribe(self)
+
+    @space = Space.new(true, updaters, cameras)
   end
 
   def start
-    #load shit etc
+    #load objects etc
   end
 
   def end
@@ -19,13 +20,11 @@ class Scene
   end
 
   def update
-    @updaters.each { |updater| updater.update }
+    @space.update
   end
 
   def draw
-    @cameras.each do |camera| 
-      @window.clip_to(camera.xport, camera.yport, camera.width, camera.height) { camera.draw }
-    end
+    @space.draw
   end
 
   def transition
