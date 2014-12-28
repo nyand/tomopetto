@@ -28,4 +28,7 @@ class GameObjectManager
     @game_objects.each { |hash| hash[:object].draw if hash[:object].respond_to?(:draw) }
   end
     
+  def receive_message(message)
+
+  end
 end

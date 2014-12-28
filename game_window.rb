@@ -14,7 +14,10 @@ require_relative 'keyboard_manager'
 require_relative 'mouse_manager'
 require_relative 'physics_manager'
 require_relative 'rectangle_component'
-require_relative 'follow_camera.rb'
+require_relative 'follow_camera'
+require_relative 'scene'
+require_relative 'scene_manager'
+
 class GameWindow < Gosu::Window
     def initialize
       super 320,240, false
@@ -35,7 +38,12 @@ class GameWindow < Gosu::Window
       @manager = GameObjectManager.new
       
       @collision = PhysicsManager.new
+      @keyboard_manager = KeyboardManager.new(@input_manager)
 
+      @scene = Scene.new("Game", self, Publisher.new, [@manager, @camera, @keyboard_manager, @collision], [@camera])
+      @scene_manager = SceneManager.new
+      @scene_manager.add(@scene)
+      
       @pet2 = DrawableGameObject.new(1, Publisher.new('Pet2'))
       position = PositionComponent.new(50, 50, true)
       @pet2.add_component(position)
@@ -124,16 +132,16 @@ class GameWindow < Gosu::Window
       @manager.add(@pet2)
       @manager.add(@cursor)
       
-      @keyboard_manager = KeyboardManager.new(@input_manager)
       @mouse_manager = MouseManager.new
     end
 
     def update
-      @mouse_manager.update(self.mouse_x, self.mouse_y)
-      @keyboard_manager.update
-      @manager.update
-      @collision.update
-      @camera.update
+      #@mouse_manager.update(self.mouse_x, self.mouse_y)
+      #@keyboard_manager.update
+      #@manager.update
+      #@collision.update
+      #@camera.update
+      @scene_manager.update
     end
 
     def draw
@@ -142,7 +150,8 @@ class GameWindow < Gosu::Window
       draw_line(@camera.xport+1,@camera.yport+1,0xffffffff,@camera.width + @camera.xport,@camera.yport,0xffffffff)
       draw_line(@camera.width + @camera.xport,@camera.yport,0xffffffff,@camera.width + @camera.xport,@camera.height + @camera.yport,0xffffffff)
       draw_line(@camera.xport,@camera.height + @camera.yport,0xffffffff,@camera.width + @camera.xport,@camera.height + @camera.yport,0xffffffff)
-      clip_to(@camera.xport, @camera.yport, @camera.width, @camera.height) { @camera.draw }
+      #clip_to(@camera.xport, @camera.yport, @camera.width, @camera.height) { @camera.draw }
+      @scene_manager.draw
     end
 
     def button_down(id)

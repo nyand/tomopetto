@@ -42,6 +42,10 @@ class Camera
 
   end
 
+  def receive_message(message)
+
+  end
+
     def rotate_x(x, y, angle)
       rad_rot = angle * Math::PI / 180
       x*Math.cos(rad_rot) - y*Math.sin(rad_rot)

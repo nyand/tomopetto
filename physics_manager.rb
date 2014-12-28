@@ -18,6 +18,10 @@ class PhysicsManager
     @collision_resolver.unsubscribe(body.owner)
   end
 
+  def receive_message(message)
+
+  end
+
   def update
     @bodies.each do |body1|
       @bodies.each do |body2|
