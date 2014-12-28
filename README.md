@@ -1,5 +1,6 @@
 Tomopetto （友ペット）
 =========
+*Check DEVELOP branch for latest additions/changes to the code. MASTER will be empty until a stable release is complete.*
 
 Tomopetto is a pet simulation game similar to Tomodatchi. It is developed with Ruby using the [Gosu](http://www.libgosu.org/) framework.
 The goal of this project was to learn to program in Ruby and to learn the basics of programming a 2D game architecture and engine.
